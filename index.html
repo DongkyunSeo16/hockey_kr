@@ -1,42 +1,174 @@
 <!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ICE RUSH · 아이스하키</title><style>
-*{box-sizing:border-box}body{margin:0;background:#080f19;color:#eaf2fa;font:16px system-ui,sans-serif}button,select{font:inherit;color:inherit;background:#182536;border:1px solid #344459;border-radius:6px;padding:11px 18px;cursor:pointer}button:hover{border-color:#81e8cd}button.active,.primary{background:#aff0d7;color:#062a24;border-color:#aff0d7;font-weight:750}header{padding:23px 4vw;border-bottom:1px solid #253140;display:flex;align-items:center;justify-content:space-between}.logo{font-size:27px;font-weight:900;font-style:italic;letter-spacing:-1px}.logo span{color:#aff0d7}.sub{color:#889aaf;font-size:14px}.wrap{max-width:1500px;margin:auto;padding:24px 4vw}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.tabs{display:flex;gap:8px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:22px}.arena{position:relative;background:#121f30;border:1px solid #344355;border-radius:12px;overflow:hidden}.score{display:flex;justify-content:center;align-items:center;gap:25px;padding:17px;background:#101b2a}.score b{font-size:30px}.clock{text-align:center;min-width:85px;color:#aff0d7}.clock strong{display:block;font-size:23px}.canvasbox{position:relative}canvas{display:block;width:100%;aspect-ratio:1000/580;touch-action:none}.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#07102080;backdrop-filter:blur(3px)}.panel{padding:30px;text-align:center;background:#101b2aee;border:1px solid #506279;border-radius:12px;max-width:90%}.panel h1{font-size:32px;margin:0 0 12px}.panel p{color:#b2c2d4;line-height:1.7}.status{padding:13px 18px;color:#92a9bf;font-size:14px;display:flex;justify-content:space-between;gap:10px}aside{background:#111b29;border:1px solid #2a3748;border-radius:12px;padding:22px}h2{font-size:18px;margin:0 0 18px}label{display:block;font-size:14px;color:#a2b2c6;margin:20px 0 9px}select{width:100%}.control{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #263345;font-size:14px}kbd{font:13px system-ui;background:#25344a;padding:3px 7px;border-radius:4px}.note{font-size:14px;color:#9eb2c8;line-height:1.7}.bottom{margin-top:23px;border-top:1px solid #27374a;padding-top:22px}table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px;text-align:left;border-bottom:1px solid #293746}.bracket{display:flex;gap:18px;flex-wrap:wrap}.round{flex:1;min-width:160px}.pair{background:#182638;padding:14px;margin:10px 0;border-left:3px solid #86dec9}.touch{display:none;justify-content:space-between;padding:10px;gap:8px}.touch button{touch-action:none;padding:12px}.touch{flex-wrap:wrap}.touch>div{display:flex;gap:5px;flex-wrap:wrap}footer{margin-top:19px;color:#788da6;font-size:14px}@media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:grid;grid-template-columns:1fr 1fr;gap:15px}.top{flex-wrap:wrap}.touch{display:flex}.score{gap:13px}.score b{font-size:23px}.wrap{padding:16px}.tabs button{padding:10px 14px}}@media(max-width:480px){aside{display:block}.sub{font-size:12px}.score{font-size:14px}.status{font-size:12px}}
-</style><header><div class="logo">ICE <span>RUSH</span></div><div class="sub">HOCKEY / 시즌 01</div></header><main class="wrap"><div class="top"><nav class="tabs"><button data-mode="quick" class="active">단판 경기</button><button data-mode="league">리그</button><button data-mode="cup">월드컵</button></nav><button id="pause">일시정지 ⏸</button></div><div class="layout"><section class="arena"><div class="score"><span id="home">🇰🇷 대한민국</span><b id="scoreA">0</b><div class="clock"><strong id="clock">02:00</strong><small id="period">1 피리어드</small></div><b id="scoreB">0</b><span id="away">🇨🇦 캐나다</span></div><div class="canvasbox"><canvas id="ice" aria-label="아이스하키 경기장"></canvas><div id="overlay" class="overlay"><div class="panel"><h1 id="title">빙판 위로.</h1><p id="intro">수비 2명 · 공격 3명 · 자동 골리.<br>패스를 받으면 그 선수로 바로 전환됩니다.</p><button class="primary" id="start">경기 시작</button></div></div></div><div class="touch"><div><button data-key="ArrowLeft">◀</button><button data-key="ArrowUp">▲</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div><div><button id="action" data-key="KeyX">패스 / 스틸</button><button data-key="KeyC">선수 전환</button><button data-key="Space">슛</button></div></div><div class="status"><span id="msg">오른쪽 골대를 향해 공격하세요</span><span><span id="role">C · 센터</span> · 골리 AUTO</span></div></section><aside><h2>매치 설정</h2><label for="team">내 팀</label><select id="team"></select><label for="difficulty">난이도</label><select id="difficulty"><option value="0.8">루키</option><option value="1" selected>프로</option><option value="1.3">엘리트</option></select><label for="duration">피리어드 시간</label><select id="duration"><option value="60">1분</option><option value="120" selected>2분</option><option value="180">3분</option></select><label>조작 방법</label><div class="control"><span>스케이팅</span><kbd>W A S D / 방향키</kbd></div><div class="control"><span>패스 / 스틸</span><kbd>X</kbd></div><div class="control"><span>선수 전환</span><kbd>C</kbd></div><div class="control"><span>충전 슛</span><kbd>Space 길게</kbd></div><div class="control"><span>좌우 드리블</span><kbd>Z / V</kbd></div><div class="control"><span>스프린트</span><kbd>Shift</kbd></div><p class="note">민트 링이 조작 선수이고 음영은 이동 가능한 구역입니다. 퍽이 있으면 X로 패스, 없으면 가까운 상대의 퍽을 X로 스틸하세요. C로 선수를 전환합니다.</p></aside></div><section id="competition" class="bottom" hidden></section><footer>터치 조작 지원 · 고해상도 빙판 렌더링 · 3 피리어드 / 동점 시 골든골</footer></main><script>
-const $=s=>document.querySelector(s),canvas=$('#ice'),ctx=canvas.getContext('2d');const teams=['🇰🇷 대한민국','🇨🇦 캐나다','🇸🇪 스웨덴','🇫🇮 핀란드','🇺🇸 미국','🇨🇿 체코','🇨🇭 스위스','🇩🇪 독일'];teams.forEach((t,i)=>$('#team').add(new Option(t,i)));let mode='quick',players=[],selected=0,puck={x:500,y:290,vx:0,vy:0,owner:null,lock:0},keys={},running=false,paused=false,score=[0,0],time=120,period=1,elapsed=0,charge=0,last=0,cooldown=0,goalFlash=0,opponent=1,competition=null,passTarget=null,shotTeam=null,trail=[],skateMarks=[],roundResult=false;let formationLines=[300,300];const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);function resize(){const d=devicePixelRatio||1;canvas.width=Math.round(1000*d);canvas.height=Math.round(580*d);ctx.setTransform(d,0,0,d,0,0)}resize();window.addEventListener('resize',resize);
-// Positions use each team's attacking direction: +x for home, -x for away.
-// The formation advances with play; these game boundaries apply to humans and AI.
+*{box-sizing:border-box}body{margin:0;background:#080f19;color:#eaf2fa;font:16px system-ui,sans-serif}button,select{font:inherit;color:inherit;background:#182536;border:1px solid #344459;border-radius:6px;padding:11px 18px;cursor:pointer}button:hover{border-color:#81e8cd}button.active,.primary{background:#aff0d7;color:#062a24;border-color:#aff0d7;font-weight:750}header{padding:23px 4vw;border-bottom:1px solid #253140;display:flex;align-items:center;justify-content:space-between}.logo{font-size:27px;font-weight:900;font-style:italic;letter-spacing:-1px}.logo span{color:#aff0d7}.sub{color:#889aaf;font-size:14px}.wrap{max-width:1500px;margin:auto;padding:24px 4vw}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px}.tabs{display:flex;gap:8px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:22px}.arena{position:relative;background:#121f30;border:1px solid #344355;border-radius:12px;overflow:hidden}.score{display:flex;justify-content:center;align-items:center;gap:25px;padding:17px;background:#101b2a}.score b{font-size:30px}.clock{text-align:center;min-width:85px;color:#aff0d7}.clock strong{display:block;font-size:23px}.canvasbox{position:relative}canvas{display:block;width:100%;aspect-ratio:1000/580;touch-action:none}.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#07102080;backdrop-filter:blur(3px)}.panel{padding:30px;text-align:center;background:#101b2aee;border:1px solid #506279;border-radius:12px;max-width:90%}.panel h1{font-size:32px;margin:0 0 12px}.panel p{color:#b2c2d4;line-height:1.7}.status{padding:13px 18px;color:#92a9bf;font-size:14px;display:flex;justify-content:space-between;gap:10px}aside{background:#111b29;border:1px solid #2a3748;border-radius:12px;padding:22px}h2{font-size:18px;margin:0 0 18px}label{display:block;font-size:14px;color:#a2b2c6;margin:20px 0 9px}select{width:100%}.control{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #263345;font-size:14px}kbd{font:13px system-ui;background:#25344a;padding:3px 7px;border-radius:4px}.note{font-size:14px;color:#9eb2c8;line-height:1.7}.bottom{margin-top:23px;border-top:1px solid #27374a;padding-top:22px}table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:10px;text-align:left;border-bottom:1px solid #293746}.bracket{display:flex;gap:18px;flex-wrap:wrap}.round{flex:1;min-width:160px}.pair{background:#182638;padding:14px;margin:10px 0;border-left:3px solid #86dec9}.touch{display:none;justify-content:space-between;padding:10px;gap:8px}.touch button{touch-action:none;padding:12px}.touch{flex-wrap:wrap}.touch>div{display:flex;gap:5px;flex-wrap:wrap}.tactical-strip{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 4px;color:#a9c6d1;font-size:14px}footer{margin-top:19px;color:#788da6;font-size:14px}@media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:grid;grid-template-columns:1fr 1fr;gap:15px}.top{flex-wrap:wrap}.touch{display:flex}.score{gap:13px}.score b{font-size:23px}.wrap{padding:16px}.tabs button{padding:10px 14px}}@media(max-width:480px){aside{display:block}.sub{font-size:12px}.score{font-size:14px}.status{font-size:12px}}
+</style><header><div class="logo">ICE <span>RUSH</span></div><div class="sub">HOCKEY / 시즌 01</div></header><main class="wrap"><div class="top"><nav class="tabs"><button data-mode="quick" class="active">단판 경기</button><button data-mode="league">리그</button><button data-mode="cup">월드컵</button></nav><button id="pause">일시정지 ⏸</button></div><div class="layout"><section class="arena"><div class="score"><span id="home">🇰🇷 대한민국</span><b id="scoreA">0</b><div class="clock"><strong id="clock">02:00</strong><small id="period">1 피리어드</small></div><b id="scoreB">0</b><span id="away">🇨🇦 캐나다</span></div><div class="canvasbox"><canvas id="ice" aria-label="아이스하키 경기장"></canvas><div id="overlay" class="overlay"><div class="panel"><h1 id="title">빙판 위로.</h1><p id="intro">수비 2명 · 공격 3명 · 자동 골리.<br>패스를 받으면 그 선수로 바로 전환됩니다.</p><button class="primary" id="start">경기 시작</button></div></div></div><div class="touch"><div><button data-key="ArrowLeft">◀</button><button data-key="ArrowUp">▲</button><button data-key="ArrowDown">▼</button><button data-key="ArrowRight">▶</button></div><div><button id="action" data-key="KeyX">패스 / 스틸</button><button id="context-action" data-key="KeyC">패스 C</button><button data-key="Space">슛</button></div></div><div class="status"><span id="msg">오른쪽 골대를 향해 공격하세요</span><span><span id="role">C · 센터</span> · 골리 AUTO</span></div></section><aside><h2>매치 설정</h2><label for="team">내 팀</label><select id="team"></select><label for="difficulty">난이도</label><select id="difficulty"><option value="0.8">루키</option><option value="1" selected>프로</option><option value="1.3">엘리트</option></select><label for="duration">피리어드 시간</label><select id="duration"><option value="60">1분</option><option value="120" selected>2분</option><option value="180">3분</option></select><label>조작 방법</label><div class="control"><span>스케이팅</span><kbd>W A S D / 방향키</kbd></div><div class="control"><span>패스 / 스틸</span><kbd>X</kbd></div><div class="control"><span>공격 패스 / 수비 전환</span><kbd>C</kbd></div><div class="control"><span>충전 슛</span><kbd>Space 길게</kbd></div><div class="control"><span>좌우 드리블</span><kbd>Z / V</kbd></div><div class="control"><span>스프린트</span><kbd>Shift</kbd></div><p class="note">C는 공격할 때 패스, 수비할 때 퍽에 가장 가까운 선수로 전환합니다. X는 패스 / 스틸입니다. 센터는 깊게 수비를 돕고, 수비수가 침투하면 빈 수비 자리를 커버합니다. 모든 스케이터가 빙판 전체를 이동할 수 있습니다.</p></aside></div><div class="tactical-strip"><span id="tactical-state">공격 · 패스 지원</span><span>민트 링: 조작 선수 · 점선: AI의 다음 움직임</span></div><section id="competition" class="bottom" hidden></section><footer>터치 조작 지원 · 고해상도 빙판 렌더링 · 3 피리어드 / 동점 시 골든골</footer></main><script>
+const $=s=>document.querySelector(s),canvas=$('#ice'),ctx=canvas.getContext('2d');const teams=['🇰🇷 대한민국','🇨🇦 캐나다','🇸🇪 스웨덴','🇫🇮 핀란드','🇺🇸 미국','🇨🇿 체코','🇨🇭 스위스','🇩🇪 독일'];teams.forEach((t,i)=>$('#team').add(new Option(t,i)));let mode='quick',players=[],selected=0,puck={x:500,y:290,vx:0,vy:0,owner:null,lock:0},keys={},running=false,paused=false,score=[0,0],time=120,period=1,elapsed=0,charge=0,last=0,cooldown=0,goalFlash=0,opponent=1,competition=null,passTarget=null,shotTeam=null,trail=[],skateMarks=[],roundResult=false;let tacticalStates=[newTacticalState(),newTacticalState()],teamPlans=[];const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);function resize(){const d=devicePixelRatio||1;canvas.width=Math.round(1000*d);canvas.height=Math.round(580*d);ctx.setTransform(d,0,0,d,0,0)}resize();window.addEventListener('resize',resize);
+// Jerseys keep their nominal position; game AI rotates duties with play.
 const roles=[
- {role:'C',label:'센터',x:455,y:290,n:19,minY:190,maxY:390},
- {role:'LW',label:'왼쪽 윙',x:410,y:155,n:27,minY:60,maxY:230},
- {role:'RW',label:'오른쪽 윙',x:410,y:425,n:88,minY:350,maxY:520},
- {role:'LD',label:'왼쪽 수비',x:280,y:180,n:4,minY:60,maxY:290},
- {role:'RD',label:'오른쪽 수비',x:280,y:400,n:6,minY:290,maxY:520}
+ {role:'C',label:'센터',x:455,y:290,n:19},
+ {role:'LW',label:'왼쪽 윙',x:410,y:155,n:27},
+ {role:'RW',label:'오른쪽 윙',x:410,y:425,n:88},
+ {role:'LD',label:'왼쪽 수비',x:280,y:180,n:4},
+ {role:'RD',label:'오른쪽 수비',x:280,y:400,n:6}
 ];
 function toTeamX(p,x){return p.t?1000-x:x}
 function toTeamY(p,y){return p.t?580-y:y}
-function positionZone(p){
- if(p.g)return {minX:p.t?892:92,maxX:p.t?908:108,minY:245,maxY:335};
- const r=roles.find(r=>r.role===p.role),split=formationLines[p.t];
- const minX=p.role.endsWith('D')?65:split,maxX=p.role.endsWith('D')?split:935;
- return p.t?{minX:1000-maxX,maxX:1000-minX,minY:580-r.maxY,maxY:580-r.minY}:{minX,maxX,minY:r.minY,maxY:r.maxY};
-}
+function rinkBounds(p){return p.g?{minX:p.t?892:92,maxX:p.t?908:108,minY:245,maxY:335}:{minX:65,maxX:935,minY:60,maxY:520}}
 function constrainPosition(p){
- const z=positionZone(p);
- p.x=clamp(p.x,z.minX,z.maxX);p.y=clamp(p.y,z.minY,z.maxY);
+ const z=rinkBounds(p);p.x=clamp(p.x,z.minX,z.maxX);p.y=clamp(p.y,z.minY,z.maxY);
  if((p.x===z.minX&&p.vx<0)||(p.x===z.maxX&&p.vx>0))p.vx=0;
  if((p.y===z.minY&&p.vy<0)||(p.y===z.maxY&&p.vy>0))p.vy=0;
 }
+function newTacticalState(){return {pincher:null,pinchTime:0,pinchRest:0,pressure:null,pressureTime:0,phase:'attack'}}
+function homeAttack(){return puck.owner?.t===0||(!puck.owner&&passTarget?.t===0)}
+function pointSegmentDistance(p,a,b){
+ const dx=b.x-a.x,dy=b.y-a.y,l=dx*dx+dy*dy;
+ const u=l?clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/l,0,1):0;
+ return Math.hypot(p.x-a.x-u*dx,p.y-a.y-u*dy);
+}
+function laneClearance(p,target){
+ const rivals=players.filter(q=>!q.g&&q.t!==p.t);
+ return Math.min(150,...rivals.map(q=>pointSegmentDistance(q,p,target)));
+}
+function bestPassTarget(p){
+ const others=players.filter(q=>q.t===p.t&&!q.g&&q!==p);
+ const rivals=players.filter(q=>q.t!==p.t&&!q.g);
+ const rating=q=>{
+  const distance=dist(p,q),space=Math.min(150,...rivals.map(o=>dist(q,o)));
+  const forward=clamp(toTeamX(p,q.x)-toTeamX(p,p.x),-160,240);
+  const lane=laneClearance(p,q);
+  return space*.6+Math.min(90,lane)*1.1+forward*.22-distance*.19-(lane<25?180:0)-(distance<55?70:0);
+ };
+ return others.sort((a,b)=>rating(b)-rating(a))[0];
+}
+// Per-team coordinator: one pressure player, passing support, net-front cover,
+// and at most one AI defenseman joining the attack. Center fills the vacancy.
+function buildTeamPlan(t,dt){
+ const team=players.filter(p=>p.t===t&&!p.g),rivals=players.filter(p=>p.t!==t&&!p.g);
+ const basis={t},u=toTeamX(basis,puck.x),v=toTeamY(basis,puck.y);
+ const local=p=>({x:toTeamX(basis,p.x),y:toTeamY(basis,p.y)});
+ const center=team.find(p=>p.role==='C'),defs=team.filter(p=>p.role.endsWith('D')),wings=team.filter(p=>p.role.endsWith('W'));
+ const carrier=puck.owner?.t===t?puck.owner:null;
+ const ownControl=!!carrier||(!puck.owner&&passTarget?.t===t);
+ const defending=puck.owner?.t!==undefined&&puck.owner.t!==t||(!puck.owner&&passTarget&&passTarget.t!==t);
+ const phase=ownControl?(u<335?'breakout':'attack'):defending?(u>600?'forecheck':'defend'):'recover';
+ const state=tacticalStates[t];state.pinchTime=Math.max(0,state.pinchTime-dt);state.pinchRest=Math.max(0,state.pinchRest-dt);state.pressureTime=Math.max(0,state.pressureTime-dt);
+ const phaseChanged=state.phase!==phase;state.phase=phase;
+ const point=clamp(u-165,130,665),side=v<290?-1:1;
+ const forced=defs.find(p=>p===carrier)||defs.filter(p=>local(p).x>point+90&&local(p).x>440).sort((a,b)=>local(b).x-local(a).x)[0];
+ if(forced&&forced!==state.pincher){state.pincher=forced;state.pinchTime=2.4}
+ if(state.pincher){
+  const returned=local(state.pincher).x<=point+45;
+  if(!forced&&returned&&(!ownControl||state.pinchTime===0)){
+   state.pincher=null;state.pinchRest=2;
+  }
+ }
+ if(!state.pincher&&ownControl&&u>575&&Math.abs(v-290)>65&&state.pinchRest===0&&center!==carrier){
+  const candidate=defs.find(p=>p.role===(side<0?'LD':'RD'));
+  const vacancy={x:toTeamX(basis,point),y:toTeamY(basis,side<0?195:385)};
+  // A human-controlled center is never pulled away by AI.
+  const centerAvailable=center!==players[selected]||dist(center,vacancy)<90;
+  const clearApproach=Math.min(...rivals.map(o=>dist(o,candidate)))>65;
+  if(centerAvailable&&clearApproach&&dist(center,vacancy)<290){state.pincher=candidate;state.pinchTime=3.4}
+ }
+ const pincher=state.pincher,cover=pincher?center:null,partner=pincher?defs.find(p=>p!==pincher):null;
+ const targets=new Map();
+ const put=(p,x,y,task)=>{
+  const target={x:toTeamX(basis,clamp(x,65,935)),y:toTeamY(basis,clamp(y,60,520)),task};
+  targets.set(p,target);p.aiTarget=target;p.task=task;
+ };
+ const predicted={x:clamp(puck.x+puck.vx*.18,65,935),y:clamp(puck.y+puck.vy*.18,60,520)};
+ let pressure=null;
+ if(!ownControl){
+  let candidates=team.filter(p=>p!==cover);
+  if(!candidates.length)candidates=team;
+  // Choose by arrival distance; a center may pressure all the way to its own net.
+  const ranked=candidates.sort((a,b)=>dist(a,predicted)-dist(b,predicted));
+  const best=ranked[0];
+  if(phaseChanged||!candidates.includes(state.pressure)||state.pressureTime===0||dist(best,predicted)+35<dist(state.pressure,predicted)){
+   state.pressure=best;state.pressureTime=.4;
+  }
+  pressure=state.pressure;
+ }
+ if(ownControl){
+  if(phase==='breakout'){
+   put(center,clamp(u+100,140,520),clamp(v+(v<290?85:-85),90,490),'탈출 패스 지원');
+   for(const w of wings)put(w,clamp(u+190,300,640),w.role==='LW'?105:475,'측면 패스 지원');
+  }else{
+   put(center,clamp(u-70,350,835),clamp(v+(v<290?100:-100),100,480),'공격 연결');
+   const strong=wings.find(p=>p.role===(side<0?'LW':'RW')),weak=wings.find(p=>p!==strong);
+   put(strong,clamp(u-65,380,870),clamp(v-side*75,85,495),'퍽 근처 패스 지원');
+   put(weak,clamp(u+65,580,885),290-side*80,'골문 앞 침투');
+  }
+  for(const d of defs)put(d,point+(d.role==='LD'?0:-25),d.role==='LD'?200:380,'후방 패스 지원');
+  if(pincher){
+   const holeY=pincher.role==='LD'?195:385;
+   put(center,point,holeY,'수비 커버');
+   put(partner,clamp(point-50,110,620),partner.role==='LD'?220:360,'후방 수비 유지');
+   const covered=dist(center,targets.get(center))<110;
+   if(pincher!==carrier)put(pincher,covered?clamp(u+35,560,900):point+25,covered?clamp(v-side*50,125,455):holeY,covered?'공격 침투':'커버 대기');
+  }
+  if(carrier){
+   let desiredY=290;
+   // Carry into open ice, away from the nearest opponent, and towards the slot.
+   const nearest=rivals.reduce((a,b)=>dist(carrier,a)<dist(carrier,b)?a:b);
+   if(dist(carrier,nearest)<110)desiredY=clamp(local(carrier).y+(local(nearest).y<local(carrier).y?105:-105),90,490);
+   put(carrier,clamp(local(carrier).x+170,150,905),desiredY,carrier.role.endsWith('D')?'공격 침투':'퍽 운반');
+  }
+  if(passTarget?.t===t&&!puck.owner){const q=passTarget;put(q,local(q).x,local(q).y,'패스 리시브')}
+ }else if(phase==='forecheck'){
+  const fs=team.filter(p=>!p.role.endsWith('D')&&p!==cover).sort((a,b)=>dist(a,puck)-dist(b,puck));
+  put(center,clamp(u-185,380,650),290,'역습 대비');
+  for(const w of wings)put(w,clamp(u-130,400,825),w.role==='LW'?165:415,'패스 길 차단');
+  if(fs[1])put(fs[1],clamp(u-65,350,850),clamp(v-side*85,80,500),'압박 지원');
+  for(const d of defs)put(d,clamp(u-255,280,560),d.role==='LD'?205:375,'역습 수비');
+ }else if(phase==='defend'){
+  const threats=rivals.filter(q=>q!==puck.owner).sort((a,b)=>local(a).x-local(b).x);
+  const netX=clamp(u-100,115,400);
+  for(const d of defs){
+   const sideSign=d.role==='LD'?-1:1;
+   const mark=threats.find(q=>(local(q).y-290)*sideSign>=0&&local(q).x<430);
+   put(d,mark?clamp(local(mark).x-35,110,420):netX,mark?clamp(local(mark).y,135,445):290+sideSign*60,'골문 앞 수비');
+  }
+  // No minimum blue-line boundary: center can get below both defenders.
+  put(center,clamp(u-85,85,350),clamp(290+(v-290)*.35,155,425),'깊은 수비 지원');
+  const opposingDefs=rivals.filter(q=>q.role.endsWith('D'));
+  for(const w of wings){
+   const normalY=w.role==='LW'?145:435;
+   const mark=[...opposingDefs].sort((a,b)=>Math.abs(local(a).y-normalY)-Math.abs(local(b).y-normalY))[0];
+   put(w,clamp((mark?local(mark).x:u+120)-35,200,625),mark?clamp(local(mark).y,90,490):normalY,'상대 수비 마크');
+  }
+ }else{
+  put(center,clamp(u-70,100,780),clamp(v+(v<290?70:-70),90,490),'루스 퍽 지원');
+  for(const w of wings)put(w,clamp(u+65,200,860),w.role==='LW'?135:445,'리바운드 / 패스 지원');
+  for(const d of defs)put(d,clamp(u-170,120,620),d.role==='LD'?205:375,'후방 커버');
+ }
+ if(!ownControl&&pincher){
+  // Maintain the center's cover until the advanced defenseman has actually returned.
+  put(center,clamp(u-100,85,420),clamp(290+(v-290)*.3,170,410),'수비 커버 / 복귀');
+  put(pincher,clamp(u-125,120,430),pincher.role==='LD'?205:375,'수비 복귀');
+  put(partner,clamp(u-155,110,385),partner.role==='LD'?230:350,'골문 앞 수비');
+ }
+ if(pressure){
+  put(pressure,toTeamX(basis,predicted.x),toTeamY(basis,predicted.y),'퍽 압박');
+ }
+ return {phase,pincher,cover,partner,pressure,targets};
+}
+function planLabel(plan){
+ const label={attack:'공격',breakout:'수비 진영 탈출',defend:'수비',forecheck:'전방 압박',recover:'루스 퍽 회수'}[plan.phase];
+ return label+(plan.pincher?' · '+plan.pincher.role+(plan.phase==='attack'||plan.phase==='breakout'?' 침투 · C 수비 커버':' 복귀 · C 수비 커버'):' · '+(plan.phase==='defend'?'센터 깊은 수비 지원':'패스 지원과 골문 보호'));
+}
 function faceoff(){
- players=[];formationLines=[300,300];
+ players=[];tacticalStates=[newTacticalState(),newTacticalState()];
  for(let t=0;t<2;t++)for(const r of roles)players.push({x:t?1000-r.x:r.x,y:t?580-r.y:r.y,vx:0,vy:0,a:t?Math.PI:0,t,n:r.n,role:r.role,label:r.label,g:false,stamina:1,stealCooldown:0,poke:0,decisionCooldown:0});
  players.push({x:100,y:290,vx:0,vy:0,a:0,t:0,g:true,n:1,role:'G',label:'골리'},{x:900,y:290,vx:0,vy:0,a:Math.PI,t:1,g:true,n:1,role:'G',label:'골리'});
- selected=0;puck={x:480,y:290,vx:0,vy:0,owner:players[0],lock:0};passTarget=null;shotTeam=null;cooldown=.5;trail=[];charge=0;
+ selected=0;puck={x:480,y:290,vx:0,vy:0,owner:players[0],lock:0};passTarget=null;shotTeam=null;cooldown=.5;trail=[];skateMarks=[];charge=0;teamPlans=[buildTeamPlan(0,0),buildTeamPlan(1,0)];
 }faceoff();
 function setupCompetition(){const ids=[...Array(8).keys()],home=+$('#team').value;competition=mode==='league'?{home,day:0,points:ids.map(()=>0),gf:ids.map(()=>0),ga:ids.map(()=>0),played:ids.map(()=>0),schedule:(()=>{let ring=[...ids],rounds=[];for(let r=0;r<7;r++){rounds.push([0,1,2,3].map(i=>[ring[i],ring[7-i]]));ring.splice(1,0,ring.pop())}return rounds})(),opponents:[]}:{home,round:0,pairs:[[home,...ids.filter(i=>i!==home).slice(0,1)][0],ids.filter(i=>i!==home)[0]],field:[home,...ids.filter(i=>i!==home)],history:[]};}
 function chooseOpponent(){if(mode==='league'&&!competition.opponents.length)competition.opponents=competition.schedule.map(r=>{let pair=r.find(p=>p.includes(competition.home));return pair.find(i=>i!==competition.home)});opponent=mode==='league'?competition.opponents[competition.day]:mode==='cup'?competition.field[1]:(+$('#team').value===1?0:1);$('#home').textContent=teams[+$('#team').value];$('#away').textContent=teams[opponent]}
 function start(){if(!competition&&mode!=='quick')setupCompetition();chooseOpponent();score=[0,0];period=1;time=+$('#duration').value;charge=0;paused=false;running=true;roundResult=false;goalFlash=0;keys={};faceoff();$('#overlay').style.display='none';$('#pause').textContent='일시정지 ⏸';$('#team').disabled=mode!=='quick';renderCompetition()}
 $('#start').onclick=start;document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;competition=null;running=false;paused=false;$('#team').disabled=false;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));$('#title').textContent=mode==='quick'?'빙판 위로.':mode==='league'?'8개국, 하나의 정상.':'세계 챔피언에 도전.';$('#intro').textContent=mode==='quick'?'패스로 공간을 만들고 충전 슛으로 마무리하세요.':mode==='league'?'7경기 풀리그 · 승리 3점 · 동점 시 골든골':'8개국 토너먼트 · 8강 → 4강 → 결승';$('#start').textContent='경기 시작';$('#overlay').style.display='flex';renderCompetition()});$('#team').onchange=()=>{competition=null;chooseOpponent()};function togglePause(){if(!running)return;paused=!paused;$('#pause').textContent=paused?'경기 재개 ▶':'일시정지 ⏸';$('#overlay').style.display=paused?'flex':'none';if(paused){$('#title').textContent='일시정지';$('#intro').textContent='준비되면 빙판으로 돌아가세요.';$('#start').textContent='계속하기';$('#start').onclick=()=>{togglePause();$('#start').onclick=start}}keys={};charge=0}$('#pause').onclick=togglePause;
 function releasePass(p,target){
- const z=positionZone(target);
+ const z=rinkBounds(target);
  const tx=clamp(target.x+target.vx*.22,z.minX,z.maxX),ty=clamp(target.y+target.vy*.22,z.minY,z.maxY);
  const dx=tx-puck.x,dy=ty-puck.y,l=Math.hypot(dx,dy);
  if(l<1)return false;
@@ -44,10 +176,10 @@ function releasePass(p,target){
  return true;
 }
 function pass(){
- const p=players[selected];if(puck.owner!==p)return;
- const others=players.filter(q=>q.t===0&&!q.g&&q!==p);
- others.sort((a,b)=>(dist(p,a)-(a.x-p.x)*.4)-(dist(p,b)-(b.x-p.x)*.4));
- if(releasePass(p,others[0]))$('#msg').textContent='패스! 리시버에게 컨트롤 자동 전환';
+ const p=puck.owner;
+ if(!p||p.t!==0||p.g){$('#msg').textContent='패스가 이동 중입니다';return}
+ selected=players.indexOf(p);const target=bestPassTarget(p);
+ if(target&&releasePass(p,target))$('#msg').textContent='패스! 리시버에게 컨트롤 자동 전환';
 }
 function steal(p,manual=false){
  if(p.g||puck.owner===p)return false;
@@ -63,9 +195,11 @@ function steal(p,manual=false){
 }
 function puckAction(){if(puck.owner===players[selected])pass();else steal(players[selected],true)}
 function shoot(power){const p=players[selected];if(puck.owner!==p)return;const dy=(Math.sin(p.a)*75)+(p.y-290)*.15;let dx=940-puck.x,y=clamp(290+dy,247,333)-puck.y,l=Math.hypot(dx,y);puck.owner=null;puck.vx=dx/l*(600+power*550);puck.vy=y/l*(600+power*550);puck.lock=.2;shotTeam=0;passTarget=null;$('#msg').textContent='슛!'}function switchPlayer(){
+ if(homeAttack()){pass();return}
  const team=players.filter(p=>p.t===0&&!p.g);
- selected=players.indexOf(team[(team.indexOf(players[selected])+1)%team.length]);
- charge=0;$('#msg').textContent=players[selected].role+' · '+players[selected].label+' '+players[selected].n+'번으로 전환';
+ const nearest=team.reduce((a,b)=>dist(a,puck)<=dist(b,puck)?a:b);
+ selected=players.indexOf(nearest);charge=0;
+ $('#msg').textContent='수비 전환 · 퍽에 가장 가까운 '+nearest.role+' '+nearest.n+'번';
 }
 function keyDown(code){if(keys[code])return;keys[code]=true;if(!running||paused)return;if(code==='KeyX')puckAction();if(code==='KeyC')switchPlayer();if(code==='Escape')togglePause()}function keyUp(code){if(code==='Space'&&keys[code]&&running&&!paused){shoot(charge);charge=0}keys[code]=false}addEventListener('keydown',e=>{if(e.target.tagName==='SELECT')return;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();keyDown(e.code)});addEventListener('keyup',e=>keyUp(e.code));addEventListener('blur',()=>{if(running&&!paused)togglePause()});document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keyDown(b.dataset.key)};b.onpointerup=()=>keyUp(b.dataset.key);b.onpointercancel=()=>keyUp(b.dataset.key)});
 function goal(t){score[t]++;goalFlash=1.7;$('#msg').textContent=t===0?'GOAL! 완벽한 마무리!':'실점 · 다시 공격을 준비하세요';if(period===4){finish();return}faceoff();cooldown=1.3}
@@ -84,19 +218,8 @@ function update(dt){
  const difficulty=+$('#difficulty').value;
  puck.lock=Math.max(0,puck.lock-dt);
  charge=keys.Space&&puck.owner===players[selected]?Math.min(1,charge+dt*.8):0;
- for(let t=0;t<2;t++){
-  const localX=t?1000-puck.x:puck.x;
-  // Defense can advance to the offensive blue line, while staying behind forwards.
-  const offset=puck.owner?.t===t&&puck.owner.role.endsWith('D')?100:-145;
-  const target=clamp(localX+offset,300,665);
-  formationLines[t]+=clamp(target-formationLines[t],-90*dt,90*dt);
- }
  const skaters=players.filter(p=>!p.g);
- const nearestInZone=t=>{
-  const candidates=skaters.filter(p=>p.t===t).filter(p=>{const z=positionZone(p);return puck.x>=z.minX-20&&puck.x<=z.maxX+20&&puck.y>=z.minY-20&&puck.y<=z.maxY+20});
-  return candidates.sort((a,b)=>dist(a,puck)-dist(b,puck))[0];
- };
- const chasers=[nearestInZone(0),nearestInZone(1)];
+ teamPlans=[buildTeamPlan(0,dt),buildTeamPlan(1,dt)];
  players.forEach((p,i)=>{
   let ax=0,ay=0;
   if(!p.g){p.stealCooldown=Math.max(0,p.stealCooldown-dt);p.poke=Math.max(0,p.poke-dt);p.decisionCooldown=Math.max(0,p.decisionCooldown-dt)}
@@ -109,34 +232,28 @@ function update(dt){
    if(ax&&ay){ax*=.707;ay*=.707}
    if(keys.ShiftLeft&&p.stamina>.1){ax*=1.55;ay*=1.55;p.stamina-=dt*.2}else p.stamina=Math.min(1,p.stamina+dt*.12);
   }else{
-   const z=positionZone(p),r=roles.find(r=>r.role===p.role);
-   let tx,ty;
-   if(puck.owner===p){
-    tx=p.t?120:880;ty=toTeamY(p,r.y)+Math.sin(elapsed*1.2)*35;
-    // AI defenders distribute to forwards rather than trying to leave their zone.
-    if(p.t&&p.decisionCooldown<=0){
-     const teammates=skaters.filter(q=>q.t===p.t&&q!==p);
-     if(p.role.endsWith('D')||toTeamX(p,p.x)<450){
-      const targets=teammates.filter(q=>!q.role.endsWith('D')).sort((a,b)=>dist(p,a)-dist(p,b));
-      if(targets.length&&Math.random()<dt*2){releasePass(p,targets[0]);p.decisionCooldown=.7}
-     }else if(Math.random()<dt*1.4){
-      const dx=65-puck.x,dy=290+(Math.random()-.5)*85-puck.y,l=Math.hypot(dx,dy);
-      puck.owner=null;puck.vx=dx/l*780;puck.vy=dy/l*780;puck.lock=.18;shotTeam=1;passTarget=null;p.decisionCooldown=.7;
-     }
-    }
-   }else if(passTarget===p){tx=p.x+p.vx*.1;ty=p.y+p.vy*.1}
-   else if(chasers[p.t]===p&&(!puck.owner||puck.owner.t!==p.t)){tx=puck.x;ty=puck.y}
-   else{
-    const localPuckX=toTeamX(p,puck.x);
-    const ownPossession=puck.owner?.t===p.t;
-    const localTarget=p.role.endsWith('D')?clamp(localPuckX-170,125,formationLines[p.t]-35):clamp(localPuckX+(ownPossession?90:45),formationLines[p.t]+65,880);
-    tx=toTeamX(p,localTarget);
-    const localPuckY=toTeamY(p,puck.y);
-    ty=toTeamY(p,r.y+(localPuckY-290)*.15);
+   const plan=teamPlans[p.t],target=plan.targets.get(p);
+   if(puck.owner===p&&p.decisionCooldown<=0){
+    const rivals=skaters.filter(q=>q.t!==p.t),pressure=Math.min(...rivals.map(q=>dist(q,p)));
+    const localX=toTeamX(p,p.x),goal={x:p.t?60:940,y:290};
+    const shotClear=laneClearance(p,goal)>28;
+    const partner=bestPassTarget(p);
+    if(localX>655&&Math.abs(p.y-290)<185&&(shotClear||localX>805)){
+     const goalie=players.find(q=>q.g&&q.t!==p.t),goalY=goalie.y<290?328:252;
+     const dx=goal.x-puck.x,dy=goalY-puck.y,l=Math.hypot(dx,dy);
+     puck.owner=null;puck.vx=dx/l*820;puck.vy=dy/l*820;puck.lock=.15;shotTeam=p.t;passTarget=null;p.decisionCooldown=.65;
+    }else if(partner&&(pressure<95||localX<330||laneClearance(p,partner)>40&&toTeamX(p,partner.x)>localX+130)){
+     releasePass(p,partner);p.decisionCooldown=.65;
+    }else p.decisionCooldown=.2;
    }
-   tx=clamp(tx,z.minX,z.maxX);ty=clamp(ty,z.minY,z.maxY);
-   const dx=tx-p.x,dy=ty-p.y,l=Math.hypot(dx,dy);
-   if(l>12){ax=dx/l*490*(p.t?difficulty:1);ay=dy/l*490*(p.t?difficulty:1)}
+   if(target){
+    const dx=target.x-p.x,dy=target.y-p.y,l=Math.hypot(dx,dy);
+    const recovery=target.task.includes('복귀')||target.task.includes('커버')||target.task.includes('깊은');
+    const acceleration=(recovery?850:650)*(p.t?difficulty:1);
+    if(l>6){ax=dx/l*Math.min(acceleration,l*12);ay=dy/l*Math.min(acceleration,l*12)}
+    // Local spacing keeps support players from converging on a single point.
+    for(const q of skaters){if(q===p||q.t!==p.t)continue;const gap=dist(p,q);if(gap>0&&gap<65){ax+=(p.x-q.x)/gap*(65-gap)*8;ay+=(p.y-q.y)/gap*(65-gap)*8}}
+   }
   }
   p.vx+=ax*dt;p.vy+=ay*dt;
   const drag=p.g?9:3.3;p.vx*=Math.exp(-drag*dt);p.vy*=Math.exp(-drag*dt);
@@ -148,7 +265,7 @@ function update(dt){
   const a=skaters[i],b=skaters[j],d=dist(a,b);
   if(d<26&&d>0){const nx=(a.x-b.x)/d,ny=(a.y-b.y)/d;a.x+=nx*(26-d)*.5;b.x-=nx*(26-d)*.5;a.y+=ny*(26-d)*.5;b.y-=ny*(26-d)*.5}
  }
- // Collision separation must obey the same boundaries as keyboard and AI movement.
+ // Only the rink boards constrain skaters; nominal positions never lock movement.
  players.forEach(constrainPosition);
  if(puck.owner){
   const p=puck.owner;
@@ -179,5 +296,5 @@ function update(dt){
  skateMarks.forEach(s=>s.life-=dt);skateMarks=skateMarks.filter(s=>s.life>0).slice(-250);
 }
 function line(x,y,x2,y2,color,w=2){ctx.strokeStyle=color;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.stroke()}function circle(x,y,r,color,w=2,fill){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.strokeStyle=color;ctx.lineWidth=w;if(fill){ctx.fillStyle=fill;ctx.fill()}ctx.stroke()}
-function draw(){ctx.clearRect(0,0,1000,580);ctx.fillStyle='#182b40';ctx.fillRect(0,0,1000,580);for(let x=20;x<1000;x+=20){ctx.fillStyle=x%40?'#26394e':'#304256';ctx.fillRect(x,10,12,14);ctx.fillRect(x,556,12,14)}ctx.save();ctx.shadowColor='#0009';ctx.shadowBlur=20;ctx.shadowOffsetY=8;ctx.beginPath();ctx.roundRect(35,33,930,514,110);ctx.fillStyle='#f1f9fc';ctx.fill();ctx.restore();ctx.save();ctx.beginPath();ctx.roundRect(45,43,910,494,100);ctx.clip();let grd=ctx.createLinearGradient(0,40,0,540);grd.addColorStop(0,'#d8edf4');grd.addColorStop(.5,'#f4fbfe');grd.addColorStop(1,'#d3e8ef');ctx.fillStyle=grd;ctx.fillRect(40,40,920,500);const zone=positionZone(players[selected]);ctx.fillStyle='#1dcba315';ctx.fillRect(zone.minX,zone.minY,zone.maxX-zone.minX,zone.maxY-zone.minY);ctx.save();ctx.strokeStyle='#1c9f8170';ctx.lineWidth=2;ctx.setLineDash([8,8]);ctx.strokeRect(zone.minX,zone.minY,zone.maxX-zone.minX,zone.maxY-zone.minY);ctx.restore();for(let x=0;x<1000;x+=7)line(x,45,x-80,535,'#a9cbd014',1);line(500,43,500,537,'#db697b',3);line(335,43,335,537,'#4b95cd',6);line(665,43,665,537,'#4b95cd',6);line(115,43,115,537,'#dd7586',2);line(885,43,885,537,'#dd7586',2);circle(500,290,74,'#5d9dc7',3);circle(500,290,6,'#4e8caf',1,'#4e8caf');for(let x of [225,775])for(let y of [165,415]){circle(x,y,64,'#d87b8a',2);circle(x,y,5,'#d87b8a',1,'#d87b8a');line(x-12,y,x+12,y,'#d87b8a',2)}circle(97,290,47,'#76b4d2',2,'#abd7e655');circle(903,290,47,'#76b4d2',2,'#abd7e655');ctx.save();ctx.translate(500,290);ctx.rotate(-Math.PI/2);ctx.fillStyle='#375b7715';ctx.font='italic 900 44px system-ui';ctx.textAlign='center';ctx.fillText('ICE RUSH',0,15);ctx.restore();skateMarks.forEach(s=>{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.a);line(-10,-6,10,-6,'#749eaf'+Math.round(s.life/8*40).toString(16).padStart(2,'0'),1);line(-10,6,10,6,'#749eaf22',1);ctx.restore()});ctx.restore();ctx.beginPath();ctx.roundRect(40,38,920,504,105);ctx.strokeStyle='#c6d7de';ctx.lineWidth=9;ctx.stroke();for(let x of [45,930]){ctx.fillStyle='#c9dce5';ctx.fillRect(x,240,25,100);for(let y=245;y<340;y+=8)line(x,y,x+25,y,'#839cae',1);for(let n=0;n<=25;n+=5)line(x+n,240,x+n,340,'#839cae',1);line(x===45?70:930,240,x===45?70:930,340,'#d55e6c',5)}players.forEach((p,i)=>{ctx.save();ctx.translate(p.x,p.y);ctx.fillStyle='#09233724';ctx.beginPath();ctx.ellipse(3,9,20,12,0,0,7);ctx.fill();if(i===selected){circle(0,0,25,'#24bd97',3);ctx.fillStyle='#169879';ctx.beginPath();ctx.moveTo(0,-34);ctx.lineTo(-6,-43);ctx.lineTo(6,-43);ctx.fill()}ctx.save();ctx.rotate(p.a);let stride=Math.sin(elapsed*15+i)*4*Math.min(1,Math.hypot(p.vx,p.vy)/100);line(-9,-9,-17,-9+stride,'#142838',5);line(-9,9,-17,9-stride,'#142838',5);line(3,12,26,20,'#685543',3);line(26,20,p.poke>0?45:35,p.poke>0?5:15,'#222e39',4);ctx.fillStyle=p.t?'#d14759':'#125578';ctx.beginPath();ctx.ellipse(0,0,p.g?20:15,p.g?20:13,0,0,7);ctx.fill();line(0,-12,0,12,p.t?'#ffb4b5':'#9cdce4',4);ctx.fillStyle=p.t?'#8d263f':'#153a52';ctx.beginPath();ctx.arc(6,0,9,0,7);ctx.fill();line(10,-6,12,6,'#edf6ff',2);if(p.g){ctx.fillStyle='#f2f8fa';ctx.fillRect(-14,-20,8,15);ctx.fillRect(-14,5,8,15)}ctx.restore();ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(p.n,-3,4);ctx.font='bold 12px system-ui';ctx.fillStyle=p.t?'#89253c':'#114563';ctx.fillText(p.role,0,-27);ctx.restore()});if(!puck.owner&&Math.hypot(puck.vx,puck.vy)>300){trail.forEach((p,i)=>circle(p.x,p.y,2,'transparent',0,'#1e3645'+Math.round(i/trail.length*80).toString(16).padStart(2,'0')))}ctx.fillStyle='#122533';ctx.beginPath();ctx.ellipse(puck.x,puck.y+2,6,4,0,0,7);ctx.fill();circle(puck.x,puck.y,4,'#0c1720',1,'#223746');if(charge>0){let p=players[selected];ctx.fillStyle='#16394d';ctx.fillRect(p.x-22,p.y+33,44,6);ctx.fillStyle='#26bc97';ctx.fillRect(p.x-22,p.y+33,44*charge,6)}if(goalFlash>0){ctx.fillStyle='#092133a0';ctx.fillRect(350,235,300,110);ctx.font='italic 900 60px system-ui';ctx.textAlign='center';ctx.fillStyle='#aff0d7';ctx.fillText('GOAL!',500,310)}$('#role').textContent=players[selected].role+' · '+players[selected].label;$('#action').textContent=puck.owner===players[selected]?'패스 X':'스틸 X';$('#scoreA').textContent=score[0];$('#scoreB').textContent=score[1];let s=Math.max(0,Math.ceil(time));$('#clock').textContent=period===4?'OT':String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');$('#period').textContent=period===4?'골든골':period+' 피리어드'}function frame(t){let dt=Math.min(.033,(t-last)/1000||.016);last=t;update(dt);draw();requestAnimationFrame(frame)}requestAnimationFrame(frame);
+function draw(){ctx.clearRect(0,0,1000,580);ctx.fillStyle='#182b40';ctx.fillRect(0,0,1000,580);for(let x=20;x<1000;x+=20){ctx.fillStyle=x%40?'#26394e':'#304256';ctx.fillRect(x,10,12,14);ctx.fillRect(x,556,12,14)}ctx.save();ctx.shadowColor='#0009';ctx.shadowBlur=20;ctx.shadowOffsetY=8;ctx.beginPath();ctx.roundRect(35,33,930,514,110);ctx.fillStyle='#f1f9fc';ctx.fill();ctx.restore();ctx.save();ctx.beginPath();ctx.roundRect(45,43,910,494,100);ctx.clip();let grd=ctx.createLinearGradient(0,40,0,540);grd.addColorStop(0,'#d8edf4');grd.addColorStop(.5,'#f4fbfe');grd.addColorStop(1,'#d3e8ef');ctx.fillStyle=grd;ctx.fillRect(40,40,920,500);ctx.save();ctx.setLineDash([5,7]);ctx.lineWidth=1.5;const plan=teamPlans[0];if(plan)for(const [p,target] of plan.targets){if(p===players[selected]||dist(p,target)<40)continue;ctx.strokeStyle=p===plan.cover?'#c9963466':'#158c7933';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(target.x,target.y);ctx.stroke();circle(target.x,target.y,7,p===plan.cover?'#c9963488':'#158c7966',1.5)}ctx.restore();for(let x=0;x<1000;x+=7)line(x,45,x-80,535,'#a9cbd014',1);line(500,43,500,537,'#db697b',3);line(335,43,335,537,'#4b95cd',6);line(665,43,665,537,'#4b95cd',6);line(115,43,115,537,'#dd7586',2);line(885,43,885,537,'#dd7586',2);circle(500,290,74,'#5d9dc7',3);circle(500,290,6,'#4e8caf',1,'#4e8caf');for(let x of [225,775])for(let y of [165,415]){circle(x,y,64,'#d87b8a',2);circle(x,y,5,'#d87b8a',1,'#d87b8a');line(x-12,y,x+12,y,'#d87b8a',2)}circle(97,290,47,'#76b4d2',2,'#abd7e655');circle(903,290,47,'#76b4d2',2,'#abd7e655');ctx.save();ctx.translate(500,290);ctx.rotate(-Math.PI/2);ctx.fillStyle='#375b7715';ctx.font='italic 900 44px system-ui';ctx.textAlign='center';ctx.fillText('ICE RUSH',0,15);ctx.restore();skateMarks.forEach(s=>{ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.a);line(-10,-6,10,-6,'#749eaf'+Math.round(s.life/8*40).toString(16).padStart(2,'0'),1);line(-10,6,10,6,'#749eaf22',1);ctx.restore()});ctx.restore();ctx.beginPath();ctx.roundRect(40,38,920,504,105);ctx.strokeStyle='#c6d7de';ctx.lineWidth=9;ctx.stroke();for(let x of [45,930]){ctx.fillStyle='#c9dce5';ctx.fillRect(x,240,25,100);for(let y=245;y<340;y+=8)line(x,y,x+25,y,'#839cae',1);for(let n=0;n<=25;n+=5)line(x+n,240,x+n,340,'#839cae',1);line(x===45?70:930,240,x===45?70:930,340,'#d55e6c',5)}players.forEach((p,i)=>{ctx.save();ctx.translate(p.x,p.y);ctx.fillStyle='#09233724';ctx.beginPath();ctx.ellipse(3,9,20,12,0,0,7);ctx.fill();if(i===selected){circle(0,0,25,'#24bd97',3);ctx.fillStyle='#169879';ctx.beginPath();ctx.moveTo(0,-34);ctx.lineTo(-6,-43);ctx.lineTo(6,-43);ctx.fill()}ctx.save();ctx.rotate(p.a);let stride=Math.sin(elapsed*15+i)*4*Math.min(1,Math.hypot(p.vx,p.vy)/100);line(-9,-9,-17,-9+stride,'#142838',5);line(-9,9,-17,9-stride,'#142838',5);line(3,12,26,20,'#685543',3);line(26,20,p.poke>0?45:35,p.poke>0?5:15,'#222e39',4);ctx.fillStyle=p.t?'#d14759':'#125578';ctx.beginPath();ctx.ellipse(0,0,p.g?20:15,p.g?20:13,0,0,7);ctx.fill();line(0,-12,0,12,p.t?'#ffb4b5':'#9cdce4',4);ctx.fillStyle=p.t?'#8d263f':'#153a52';ctx.beginPath();ctx.arc(6,0,9,0,7);ctx.fill();line(10,-6,12,6,'#edf6ff',2);if(p.g){ctx.fillStyle='#f2f8fa';ctx.fillRect(-14,-20,8,15);ctx.fillRect(-14,5,8,15)}ctx.restore();ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(p.n,-3,4);ctx.font='bold 12px system-ui';ctx.fillStyle=p.t?'#89253c':'#114563';ctx.fillText(p.role,0,-27);ctx.restore()});if(!puck.owner&&Math.hypot(puck.vx,puck.vy)>300){trail.forEach((p,i)=>circle(p.x,p.y,2,'transparent',0,'#1e3645'+Math.round(i/trail.length*80).toString(16).padStart(2,'0')))}ctx.fillStyle='#122533';ctx.beginPath();ctx.ellipse(puck.x,puck.y+2,6,4,0,0,7);ctx.fill();circle(puck.x,puck.y,4,'#0c1720',1,'#223746');if(charge>0){let p=players[selected];ctx.fillStyle='#16394d';ctx.fillRect(p.x-22,p.y+33,44,6);ctx.fillStyle='#26bc97';ctx.fillRect(p.x-22,p.y+33,44*charge,6)}if(goalFlash>0){ctx.fillStyle='#092133a0';ctx.fillRect(350,235,300,110);ctx.font='italic 900 60px system-ui';ctx.textAlign='center';ctx.fillStyle='#aff0d7';ctx.fillText('GOAL!',500,310)}$('#role').textContent=players[selected].role+' · '+players[selected].label;$('#context-action').textContent=homeAttack()?'패스 C':'가까운 선수 C';$('#tactical-state').textContent=teamPlans[0]?planLabel(teamPlans[0]):'공격 · 패스 지원';$('#action').textContent=puck.owner===players[selected]?'패스 X':'스틸 X';$('#scoreA').textContent=score[0];$('#scoreB').textContent=score[1];let s=Math.max(0,Math.ceil(time));$('#clock').textContent=period===4?'OT':String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');$('#period').textContent=period===4?'골든골':period+' 피리어드'}function frame(t){let dt=Math.min(.033,(t-last)/1000||.016);last=t;update(dt);draw();requestAnimationFrame(frame)}requestAnimationFrame(frame);
 </script></html>
